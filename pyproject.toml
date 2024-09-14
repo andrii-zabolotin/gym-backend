@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "gym-backend"
+version = "0.1.0"
+description = ""
+authors = ["Andrii Zabolotin <fenics7511@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Django = "^5.1.1"
+python-slugify = "^8.0.4"
+djangorestframework = "^3.15.2"
+drf-spectacular = "^0.27.2"
+
+[tool.poetry.group.dev.dependencies]
+django-debug-toolbar = "^4.4.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
