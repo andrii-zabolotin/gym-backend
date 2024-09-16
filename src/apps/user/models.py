@@ -28,7 +28,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_edited = models.DateTimeField(
         auto_now=True, verbose_name=_("Editing date")
     )
-    birth_date = models.DateTimeField(verbose_name=_("Birthday date"))
+    birth_date = models.DateField(verbose_name=_("Birthday date"))
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_trainer = models.BooleanField(default=False)
@@ -37,7 +37,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = "phone"
-    REQUIRED_FIELDS = ["email", "first_name", "last_name", "sex", "birth_date"]
 
     def __str__(self):
         return str(self.phone)
