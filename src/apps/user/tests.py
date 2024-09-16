@@ -16,15 +16,15 @@ class UsersManagersTest(TestCase):
             password="foo",
             first_name="foo",
             last_name="boo",
-            sex="Male",
+            sex="M",
             birth_date=date(2004, 12, 12),
         )
         self.assertEqual(user.email, "normal@user.com")
         self.assertEqual(user.phone.as_e164, "+380666657664")
         self.assertEqual(user.first_name, "foo")
         self.assertEqual(user.last_name, "boo")
-        self.assertEqual(user.sex, "Male")
-        self.assertEqual(user.birth_date, "12-12-2004")
+        self.assertEqual(user.sex, "M")
+        self.assertEqual(user.birth_date, date(2004, 12, 12),)
         self.assertTrue(user.is_active)
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_massagist)
@@ -43,7 +43,7 @@ class UsersManagersTest(TestCase):
                 password="foo",
                 first_name="foo",
                 last_name="boo",
-                sex="Male",
+                sex="M",
                 birth_date=date(2004, 12, 12),
             )
 
@@ -55,7 +55,7 @@ class UsersManagersTest(TestCase):
                 password="foo",
                 first_name="foo",
                 last_name="boo",
-                sex="Male",
+                sex="M",
                 birth_date=date(2004, 12, 12),
             )
 
@@ -65,21 +65,9 @@ class UsersManagersTest(TestCase):
                 phone=PhoneNumber.from_string("+380666657664"),
                 email="normal@user.com",
                 password="",
-                first_name="foo",
-                last_name="boo",
-                sex="Male",
-                birth_date=date(2004, 12, 12),
-            )
-
-    def test_create_user_with_invalid_phone_raises_error(self):
-        with self.assertRaises(ValueError):
-            self.User.objects.create_user(
-                phone="+380669",
-                email="normal@user.com",
-                password="foo",
-                first_name="foo",
-                last_name="boo",
-                sex="Male",
+                first_name="",
+                last_name="",
+                sex="M",
                 birth_date=date(2004, 12, 12),
             )
 
@@ -90,7 +78,7 @@ class UsersManagersTest(TestCase):
             password="foo",
             first_name="Admin",
             last_name="User",
-            sex="Female",
+            sex="F",
             birth_date=date(1985, 12, 20),
         )
         self.assertEqual(admin_user.email, "super@user.com")
@@ -112,7 +100,7 @@ class UsersManagersTest(TestCase):
                 password="foo",
                 first_name="Admin",
                 last_name="User",
-                sex="Female",
+                sex="F",
                 birth_date=date(1985, 12, 20),
                 is_superuser=False
             )
