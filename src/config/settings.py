@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "apps.user.apps.UserConfig",
     "apps.subscriptions.apps.SubscriptionsConfig",
     "apps.trainings.apps.TrainingsConfig",
+    "apps.attendance.apps.AttendanceConfig",
 ]
 
 MIDDLEWARE = [
