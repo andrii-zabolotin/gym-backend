@@ -1,12 +1,12 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from apps.subscriptions.models import UserSubscription
 from apps.trainings.models import Training
-from apps.user.models import CustomUser
 
 
 class Attendance(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, verbose_name=_("User"))
+    user_subscription = models.ForeignKey(UserSubscription, on_delete=models.PROTECT, verbose_name=_("User"))
     attendance_time = models.DateTimeField(auto_now_add=True, verbose_name=_("Attendance Datetime"))
 
     class Meta:
@@ -14,7 +14,7 @@ class Attendance(models.Model):
         verbose_name_plural = _("Attendances")
 
     def __str__(self):
-        return f"Attendance of {self.user} on {self.datetime}"
+        return f"Attendance of {self.user_subscription.user.email} on {self.datetime}"
 
 
 class AttendanceTraining(models.Model):
