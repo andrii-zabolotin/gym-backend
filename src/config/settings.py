@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Internal Apps
     "api.v1.user.apps.UserConfig",
+    "api.v1.trainings.apps.UserConfig",
+    "api.v1.subscription.apps.UserConfig",
     "apps.user.apps.UserConfig",
     "apps.subscriptions.apps.SubscriptionsConfig",
     "apps.trainings.apps.TrainingsConfig",
