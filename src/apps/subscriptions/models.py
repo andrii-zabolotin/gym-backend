@@ -1,3 +1,34 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+from datetime import timedelta
 
-# Create your models here.
+from apps.user.models import CustomUser
+
+
+class Subscription(models.Model):
+    class Meta:
+        verbose_name = _("Subscription")
+        verbose_name_plural = _("Subscriptions")
+
+    name = models.CharField(verbose_name=_("Subscription name"))
+    validity_period = models.IntegerField(verbose_name=_("Validity period"))
+    available_number_of_visits = models.IntegerField(verbose_name=_("Available number of visits"))
+    price = models.IntegerField(verbose_name=_("Price"))
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.price}"
+
+
+class UserSubscription(models.Model):
+
+    purchase_at = models.DateTimeField(auto_now_add=True)
+    subscription = models.ForeignKey(Subscription, on_delete=models.PROTECT, verbose_name=_("Subscription"))
+    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, verbose_name=_("User"))
+
+    @property
+    def expiration_at(self):
+        if self.subscription and self.purchase_at:
+            return self.purchase_at + timedelta(days=self.subscription.validity_period)
+        return None
