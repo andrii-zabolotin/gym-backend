@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from apps.subscriptions.models import UserSubscription
 from apps.user.models import CustomUser
 
 
@@ -29,12 +30,12 @@ class Training(models.Model):
 
 
 class TrainingUser(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, verbose_name=_("Participant"))
+    user_subscription = models.ForeignKey(UserSubscription, on_delete=models.PROTECT, verbose_name=_("Participant"))
     training = models.ForeignKey(Training, on_delete=models.PROTECT, verbose_name=_("Training"))
     joined_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Registration date"))
 
     class Meta:
-        unique_together = ('user', 'training')
+        unique_together = ('user_subscription', 'training')
 
     def __str__(self):
-        return f"{self.user.email} - {self.training.training_type} ({self.training.date})"
+        return f"{self.user_subscription.user.email} - {self.training.training_type} ({self.training.date})"
