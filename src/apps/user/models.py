@@ -22,13 +22,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, verbose_name=_("First name"))
     last_name = models.CharField(max_length=100, verbose_name=_("Last name"))
     sex = models.CharField(max_length=1, choices=SEX_CHOICES, verbose_name=_("Sex"))
-    date_joined = models.DateTimeField(
-        auto_now_add=True, verbose_name=_("Registration date")
-    )
-    date_edited = models.DateTimeField(
-        auto_now=True, verbose_name=_("Editing date")
-    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     birth_date = models.DateField(verbose_name=_("Birthday date"))
+    photo = models.CharField(verbose_name="URL", max_length=512)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_trainer = models.BooleanField(default=False)
@@ -37,6 +34,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = "phone"
+    REQUIRED_FIELDS = ["email", "first_name", "last_name", "sex", "birth_date"]
 
     def __str__(self):
         return str(self.phone)
