@@ -37,11 +37,33 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Internal Apps
+    "api.v1.user.apps.UserConfig",
     "apps.user.apps.UserConfig",
     "apps.subscriptions.apps.SubscriptionsConfig",
     "apps.trainings.apps.TrainingsConfig",
     "apps.attendance.apps.AttendanceConfig",
+    # External Packages
+    "phonenumber_field",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "drf_spectacular",
+    "debug_toolbar",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ],
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Gym",
+    "DESCRIPTION": "Api for K4club gym",
+    "VERSION": "1.0.0",
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -51,6 +73,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -85,13 +108,13 @@ WSGI_APPLICATION = "config.wsgi.application"
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DB_NAME', 'devdb'),
-        'USER': os.getenv('DB_USER', 'devuser'),
-        'PASSWORD': os.getenv('DB_PASS', 'changeme'),
-        'HOST': os.getenv('DB_HOST', 'db'),
-        'PORT': '5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv("DB_NAME", "devdb"),
+        "USER": os.getenv("DB_USER", "devuser"),
+        "PASSWORD": os.getenv("DB_PASS", "changeme"),
+        "HOST": os.getenv("DB_HOST", "db"),
+        "PORT": "5432",
     }
 }
 
