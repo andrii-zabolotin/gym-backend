@@ -5,6 +5,7 @@ from api.v1.user.serializers import UserSerializer
 
 class CreateUserView(generics.CreateAPIView):
     """Create a new user in the system"""
+    permission_classes = []
 
     serializer_class = UserSerializer
 
