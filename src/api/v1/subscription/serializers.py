@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from apps.subscriptions.models import Subscription
@@ -24,4 +23,3 @@ class SubscriptionUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
         fields = "__all__"
-
