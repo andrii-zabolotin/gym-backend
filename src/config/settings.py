@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Internal Apps
     "api.v1.user.apps.UserConfig",
-    "api.v1.trainings.apps.UserConfig",
-    "api.v1.subscription.apps.UserConfig",
+    "api.v1.trainings.apps.TrainingsConfig",
+    "api.v1.subscription.apps.SubscriptionConfig",
     "apps.user.apps.UserConfig",
     "apps.subscriptions.apps.SubscriptionsConfig",
     "apps.trainings.apps.TrainingsConfig",
@@ -59,12 +59,17 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ]
 }
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Gym",
-    "DESCRIPTION": "Api for K4club gym",
+    "DESCRIPTION": "Api for gym",
     "VERSION": "1.0.0",
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True
 }
 
 MIDDLEWARE = [
