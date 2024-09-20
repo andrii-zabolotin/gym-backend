@@ -26,10 +26,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(auto_now=True)
     birth_date = models.DateField(verbose_name=_("Birthday date"))
     photo = models.CharField(verbose_name="URL", max_length=512)
+    is_administrator = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    is_trainer = models.BooleanField(default=False)
-    is_massagist = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -37,4 +36,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ["email", "first_name", "last_name", "sex", "birth_date"]
 
     def __str__(self):
-        return str(self.phone)
+        return f"[{self.pk}] {self.phone}"
+
+
