@@ -1,12 +1,12 @@
 from rest_framework import serializers
 
-from api.v1.subscription.serializers import SubscriptionUserSerializer
+from api.v1.subscription.serializers import UserSubscriptionSerializer
 from apps.attendance.models import AttendanceTraining
 
 
 class AttendanceSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    user_subscription = SubscriptionUserSerializer()
+    user_subscription = UserSubscriptionSerializer()
     attendance_time = serializers.DateTimeField()
 
 
