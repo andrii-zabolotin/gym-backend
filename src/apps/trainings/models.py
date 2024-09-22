@@ -5,16 +5,16 @@ from django.utils.translation import gettext_lazy as _
 from apps.subscriptions.models import UserSubscription
 from apps.user.models import CustomUser
 
+TRAINING_TYPES = (
+    ("personal", "Personal Training"),
+    ("yoga", "Yoga"),
+    ("massage", "Massage"),
+    ("stretching", "Stretching"),
+    ("trx", "TRX"),
+)
+
 
 class Training(models.Model):
-    TRAINING_TYPES = (
-        ("personal", "Personal Training"),
-        ("yoga", "Yoga"),
-        ("massage", "Massage"),
-        ("stretching", "Stretching"),
-        ("trx", "TRX"),
-    )
-
     description = models.CharField(max_length=255, verbose_name=_("Description"), null=True, blank=True)
     training_type = models.CharField(max_length=15, choices=TRAINING_TYPES, verbose_name=_("Training type"))
     trainer = models.ForeignKey(CustomUser, on_delete=models.PROTECT, verbose_name=_("Trainer"),
