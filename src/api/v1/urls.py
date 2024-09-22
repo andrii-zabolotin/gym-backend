@@ -8,6 +8,7 @@ app_name = "api"
 urlpatterns = [
     path("token/", CreateTokenView.as_view(), name="token"),
     path("user/", include("api.v1.user.urls")),
-    path("subscription/", include("api.v1.subscription.urls")),
-    path("trainings/", include("api.v1.trainings.urls")),
+    path("", include("api.v1.subscription.urls")),
+    path("", include("api.v1.trainings.urls")),
+    path("", include("api.v1.attendance.urls")),
 ]
