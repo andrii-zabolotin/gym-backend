@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from rest_framework.permissions import SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
 class IsSuperUser(permissions.BasePermission):
@@ -29,4 +29,11 @@ class IsStaff(permissions.BasePermission):
     def has_permission(self, request, view):
         return (
             request.user and request.user.is_authenticated and request.user.is_staff
+        )
+
+
+class IsAdministrator(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return (
+                request.user and request.user.is_authenticated and request.user.is_administrator
         )
