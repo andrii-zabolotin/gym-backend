@@ -5,7 +5,8 @@ from api.v1.trainings.views import *
 app_name = "api_trainings"
 
 urlpatterns = [
-    path("", TrainingListCreateAPIView.as_view(), name="training"),
-    path("<int:pk>/", TrainingRetrieveUpdateDestroyAPIView.as_view(), name="training-detail"),
-    path("user/", TrainingUserAPIView.as_view(), name="training-user")
+    path("trainings/", TrainingListCreateAPIView.as_view(), name="training"),
+    path("trainings/<int:pk>/", TrainingRetrieveUpdateDestroyAPIView.as_view(), name="training-detail"),
+    path("trainings-users/<int:pk>/", TrainingUserRetrieveUpdateDestroyAPIView.as_view(), name="training-user-detail"),
+    path("trainings-users/", TrainingUserListCreateAPIView.as_view(), name="training-user")
 ]
