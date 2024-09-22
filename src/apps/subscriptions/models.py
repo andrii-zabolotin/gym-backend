@@ -2,7 +2,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from datetime import timedelta
 
-from apps.subscriptions.managers import SubscriptionManager
 from apps.user.models import CustomUser
 
 
@@ -26,8 +25,6 @@ class Subscription(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
-
-    objects = SubscriptionManager()
 
     def delete(self, using=None, keep_parents=False):
         self.is_active = False
@@ -54,4 +51,4 @@ class UserSubscription(models.Model):
         return None
 
     def __str__(self):
-        return f"{self.user.phone} - {self.subscription.name}"
+        return f"[{self.pk}] {self.user.phone} - {self.subscription.name}"
