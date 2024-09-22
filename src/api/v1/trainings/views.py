@@ -1,100 +1,56 @@
-from datetime import datetime
-
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter
 from rest_framework import generics, authentication, permissions, status
+from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
 
+from api.v1.trainings.filters import TrainingFilter, TrainingUserFilter
 from api.v1.trainings.serializers import TrainingsSerializer, TrainingUserSerializer
 from apps.trainings.models import Training, TrainingUser
 
 
-@extend_schema_view(
-    get=extend_schema(
-        parameters=[
-            OpenApiParameter(
-                "trainer_id",
-                OpenApiTypes.NUMBER,
-                description="Trainer id",
-            ),
-            OpenApiParameter(
-                "type",
-                OpenApiTypes.STR,
-                description="Type of training",
-                enum=["stretching", "trx", "massage", "yoga", "personal"],
-            ),
-            OpenApiParameter(
-                "date",
-                OpenApiTypes.DATE,
-                description="Training date [YYYY-MM-DD]",
-            ),
-        ]
-    )
-)
 class TrainingListCreateAPIView(generics.ListCreateAPIView):
     """Create a new subscription in the system"""
 
     serializer_class = TrainingsSerializer
-    authentication_classes = [authentication.TokenAuthentication, authentication.SessionAuthentication]
-    permission_classes = [permissions.DjangoModelPermissions]
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = []
+    filterset_class = TrainingFilter
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            self.permission_classes = [permissions.DjangoModelPermissions]
+
+        return super().get_permissions()
 
     def get_queryset(self):
-        date = self.request.GET.get("date", None)
-        trainer = self.request.GET.get("trainer_id", None)
-        training_type = self.request.GET.get("type", None)
-        params = {}
+        if not self.request.user.is_anonymous and (self.request.user.is_superuser or self.request.user.is_administrator):
+            return Training.objects.all()
 
-        if date:
-            try:
-                datetime.fromisoformat(date)
-            except ValueError:
-                return Response(
-                    {"error": "Incorrect data format, should be YYYY-MM-DD."},
-                    status.HTTP_400_BAD_REQUEST
-                )
-            if datetime.strptime(date, "%Y-%m-%d").date() < datetime.now().date():
-                return Response(
-                    {"error": "Date shouldn't be less than today."}, status=status.HTTP_400_BAD_REQUEST
-                )
-            params["date"] = date
-
-        if trainer:
-            for char in trainer:
-                if ord(char) < 48 or ord(char) > 57:
-                    return Response(
-                        {"error": "Incorrect trainer id format, should be integer."},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-            params["trainer"] = trainer
-
-        if training_type:
-            if training_type not in ["stretching", "trx", "massage", "yoga", "personal"]:
-                return Response(
-                    {"error": "Incorrect training type format, should be ['stretching', 'trx', 'massage', 'yoga', 'personal']."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            params["training_type"] = training_type
-
-        today = timezone.now().date()
-        if date:
-            return Training.objects.filter(date__gte=today, **params)
-        else:
-            return Training.objects.filter(**params)
+        return Training.objects.filter(date__gte=timezone.now().date())
 
 
 class TrainingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Training.objects.all()
     serializer_class = TrainingsSerializer
-    authentication_classes = [authentication.TokenAuthentication, authentication.SessionAuthentication]
-    # permission_classes = [permissions.DjangoModelPermissions]
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = []
+
+    def get_permissions(self):
+        if self.request.method not in SAFE_METHODS:
+            self.permission_classes = [permissions.DjangoModelPermissions]
+
+        return super().get_permissions()
+
+    def get_queryset(self):
+        if not self.request.user.is_anonymous and (self.request.user.is_superuser or self.request.user.is_administrator):
+            return Training.objects.all()
+
+        return Training.objects.filter(date__gte=timezone.now().date())
 
     def update(self, request, *args, **kwargs):
         try:
-            response = super().update(request, *args, **kwargs)
-            return response
+            return super().update(request, *args, **kwargs)
         except ValidationError as e:
             return Response(
                 e.message_dict,
@@ -113,16 +69,35 @@ class TrainingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
             )
 
 
-class TrainingUserAPIView(generics.ListCreateAPIView):
+class TrainingUserListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = TrainingUserSerializer
-    queryset = TrainingUser.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+    filterset_class = TrainingUserFilter
+
+    def get_queryset(self):
+        if not self.request.user.is_anonymous and (self.request.user.is_superuser or self.request.user.is_administrator):
+            return TrainingUser.objects.all()
+
+        return TrainingUser.objects.filter(user_subscription__user=self.request.user)
 
     def create(self, request, *args, **kwargs):
         try:
-            response = super().create(request, *args, **kwargs)
-            return response
+            return super().create(request, *args, **kwargs)
         except ValidationError as e:
             return Response(
                 e.message_dict,
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class TrainingUserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TrainingUserSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
+
+    def get_queryset(self):
+        if not self.request.user.is_anonymous and (self.request.user.is_superuser or self.request.user.is_administrator):
+            return TrainingUser.objects.all()
+
+        return TrainingUser.objects.filter(user_subscription__user=self.request.user)
