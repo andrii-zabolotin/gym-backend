@@ -15,8 +15,8 @@ class GroupViewSet(viewsets.ModelViewSet):
     Manage user groups
     """
     queryset = Group.objects.all()
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [IsSuperUser]
 
     def get_serializer_class(self):
         if self.request.method in ["POST", "PUT", "PATCH"]:
@@ -31,8 +31,8 @@ class PermissionViewSet(
     viewsets.GenericViewSet
 ):
     queryset = Permission.objects.all()
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [IsSuperUser]
     serializer_class = PermissionSerializer
 
 
@@ -43,8 +43,8 @@ class UserGroupViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [IsSuperUser]
     queryset = get_user_model().objects.all()
 
     def get_serializer_class(self):
