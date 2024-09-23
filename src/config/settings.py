@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "api.v1.trainings.apps.TrainingsConfig",
     "api.v1.subscription.apps.SubscriptionConfig",
     "api.v1.attendance.apps.AttendanceConfig",
+    "api.v1.group_permission.apps.GroupPermissionConfig",
     "apps.user.apps.UserConfig",
     "apps.subscriptions.apps.SubscriptionsConfig",
     "apps.trainings.apps.TrainingsConfig",
