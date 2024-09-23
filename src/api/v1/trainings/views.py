@@ -76,7 +76,10 @@ class TrainingUserListCreateAPIView(generics.ListCreateAPIView):
     filterset_class = TrainingUserFilter
 
     def get_queryset(self):
-        if not self.request.user.is_anonymous and (self.request.user.is_superuser or self.request.user.is_administrator):
+        if self.request.user.is_anonymous:
+            return TrainingUser.objects.none()
+
+        if self.request.user.is_superuser or self.request.user.is_administrator:
             return TrainingUser.objects.all()
 
         return TrainingUser.objects.filter(user_subscription__user=self.request.user)

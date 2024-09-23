@@ -14,6 +14,9 @@ class AttendanceListCreateAPIView(generics.ListCreateAPIView):
     filterset_class = AttendanceFilter
 
     def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return Attendance.objects.none()
+
         if self.request.user.is_superuser or self.request.user.is_administrator:
             return Attendance.objects.all()
 

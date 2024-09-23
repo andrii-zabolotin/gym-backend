@@ -48,6 +48,9 @@ class UserSubscriptionListCreateAPIView(generics.ListCreateAPIView):
     filterset_class = SubscriptionUserFilter
 
     def get_queryset(self):
+        if self.request.user.is_anonymous:
+            return UserSubscription.objects.none()
+
         if self.request.user.is_superuser or self.request.user.is_administrator:
             return UserSubscription.objects.all()
 
