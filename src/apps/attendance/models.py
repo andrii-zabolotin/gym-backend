@@ -10,6 +10,7 @@ from apps.trainings.models import Training
 class Attendance(models.Model):
     user_subscription = models.ForeignKey(UserSubscription, on_delete=models.PROTECT, verbose_name=_("User"))
     attendance_time = models.DateTimeField(auto_now_add=True, verbose_name=_("Attendance Datetime"))
+    training = models.ForeignKey(Training, on_delete=models.PROTECT, verbose_name=_("Training"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("Attendance")
