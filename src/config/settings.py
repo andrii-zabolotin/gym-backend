@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "debug_toolbar",
     "django_filters",
+    "corsheaders",
 ]
 
 REST_FRAMEWORK = {
@@ -69,6 +70,10 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
 }
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Gym",
@@ -87,6 +92,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # CORS
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = "config.urls"
