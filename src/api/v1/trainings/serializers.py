@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from apps.trainings.models import Training, TrainingUser
+from api.v1.user.serializers import LimitedUserSerializer
+from apps.trainings.models import Training, TrainingUser, TrainingType
 
 
 class TrainingsSerializer(serializers.ModelSerializer):
@@ -15,3 +16,18 @@ class TrainingUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = TrainingUser
         fields = "__all__"
+
+
+class TrainingTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TrainingType
+        fields = "__all__"
+
+
+class CustomTrainingsSerializer(serializers.ModelSerializer):
+    trainer = LimitedUserSerializer(read_only=True)
+    training_type = serializers.CharField(source="training_type.name")
+
+    class Meta:
+        model = Training
+        fields = ["training_type", "trainer"]

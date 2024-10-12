@@ -1,12 +1,12 @@
 from django_filters import rest_framework as filters
 
-from apps.trainings.models import TRAINING_TYPES
+from apps.trainings.models import TrainingType
 
 
 class TrainingFilter(filters.FilterSet):
     trainer_id = filters.NumberFilter(field_name="trainer__id")
     date = filters.DateFilter(field_name="date")
-    type = filters.ChoiceFilter(field_name="training_type", choices=TRAINING_TYPES)
+    type = filters.ChoiceFilter(field_name="training_type", choices=[type.code for type in TrainingType.objects.all()])
 
 
 class TrainingUserFilter(filters.FilterSet):

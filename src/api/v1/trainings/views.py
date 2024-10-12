@@ -4,10 +4,12 @@ from django.utils import timezone
 from rest_framework import generics, authentication, permissions, status
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
+from rest_framework import viewsets
 
+from api.auth.permissions import IsSuperUser
 from api.v1.trainings.filters import TrainingFilter, TrainingUserFilter
-from api.v1.trainings.serializers import TrainingsSerializer, TrainingUserSerializer
-from apps.trainings.models import Training, TrainingUser
+from api.v1.trainings.serializers import TrainingsSerializer, TrainingUserSerializer, TrainingTypeSerializer
+from apps.trainings.models import Training, TrainingUser, TrainingType
 
 
 class TrainingListCreateAPIView(generics.ListCreateAPIView):
@@ -104,3 +106,17 @@ class TrainingUserRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPI
             return TrainingUser.objects.all()
 
         return TrainingUser.objects.filter(user_subscription__user=self.request.user)
+
+
+class TrainingTypeViewSet(viewsets.ModelViewSet):
+    queryset = TrainingType.objects.all()
+    serializer_class = TrainingTypeSerializer
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def get_permissions(self):
+        if self.request.method in SAFE_METHODS:
+            self.permission_classes = []
+        else:
+            self.permission_classes = [IsSuperUser]
+
+        return super().get_permissions()
