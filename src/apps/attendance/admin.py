@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from apps.attendance.models import AttendanceTraining, Attendance
+from apps.attendance.models import Attendance
 
-admin.site.register(AttendanceTraining)
 admin.site.register(Attendance)

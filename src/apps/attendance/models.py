@@ -41,16 +41,3 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"Attendance of {self.user_subscription.user.phone} on {self.attendance_time}"
-
-
-class AttendanceTraining(models.Model):
-    attendance = models.ForeignKey(Attendance, on_delete=models.PROTECT, verbose_name=_("Attendance"))
-    training = models.ForeignKey(Training, on_delete=models.PROTECT, verbose_name=_("Training"))
-
-    class Meta:
-        verbose_name = _("Attendance Training")
-        verbose_name_plural = _("Attendance Trainings")
-        unique_together = ('attendance', 'training')
-
-    def __str__(self):
-        return f"Training {self.training.training_type} for {self.attendance.user_subscription.user.phone} on {self.check_in_time}"

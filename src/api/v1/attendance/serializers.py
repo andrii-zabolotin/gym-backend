@@ -1,16 +1,20 @@
 from rest_framework import serializers
 
-from api.v1.subscription.serializers import UserSubscriptionSerializer
-from apps.attendance.models import AttendanceTraining
+from api.v1.subscription.serializers import CustomSubscriptionSerializer
+from api.v1.trainings.serializers import CustomTrainingsSerializer
+from apps.attendance.models import Attendance
 
 
-class AttendanceSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    user_subscription = UserSubscriptionSerializer()
-    attendance_time = serializers.DateTimeField()
-
-
-class AttendanceTrainingSerializer(serializers.ModelSerializer):
+class CreateAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AttendanceTraining
+        model = Attendance
         fields = "__all__"
+
+
+class AttendanceSerializer(serializers.ModelSerializer):
+    training = CustomTrainingsSerializer(read_only=True)
+    user_subscription = CustomSubscriptionSerializer(read_only=True)
+
+    class Meta:
+        model = Attendance
+        fields = ["id", "user_subscription", "attendance_time", "training"]

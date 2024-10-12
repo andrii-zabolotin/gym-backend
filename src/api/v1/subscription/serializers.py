@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api.v1.user.serializers import LimitedUserSerializer
 from apps.subscriptions.models import Subscription, UserSubscription
 
 
@@ -26,6 +27,15 @@ class SubscriptionUpdateSerializer(serializers.ModelSerializer):
 
 
 class UserSubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserSubscription
+        fields = "__all__"
+
+
+class CustomSubscriptionSerializer(serializers.ModelSerializer):
+    user = LimitedUserSerializer(read_only=True)
+    subscription = SubscriptionSerializer(read_only=True)
+
     class Meta:
         model = UserSubscription
         fields = "__all__"
