@@ -6,19 +6,18 @@ from api.v1.subscription.serializers import SubscriptionSerializer, Subscription
 from apps.subscriptions.models import Subscription, UserSubscription
 
 
-class SubscriptionCreateAPIView(generics.CreateAPIView):
-    """Create a new subscription in the system"""
-
-    serializer_class = SubscriptionSerializer
-    authentication_classes = [authentication.TokenAuthentication]
-    permission_classes = [permissions.DjangoModelPermissions]
-
-
-class SubscriptionListAPIView(generics.ListAPIView):
+class SubscriptionListCreateAPIView(generics.ListCreateAPIView):
     """Retrieve a list of subscriptions."""
     serializer_class = SubscriptionSerializer
     authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = []
     filterset_class = SubscriptionFilter
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            self.permission_classes = [permissions.DjangoModelPermissions]
+
+        return super().get_permissions()
 
     def get_queryset(self):
         if not self.request.user.is_anonymous and (self.request.user.is_superuser or self.request.user.is_administrator):

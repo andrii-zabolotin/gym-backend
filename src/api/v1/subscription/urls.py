@@ -5,8 +5,7 @@ from api.v1.subscription.views import *
 app_name = "api_subscription"
 
 urlpatterns = [
-    path("subscriptions/", SubscriptionListAPIView.as_view(), name="subscription-list"),
-    path("subscriptions/", SubscriptionCreateAPIView.as_view(), name="subscription-create"),
+    path("subscriptions/", SubscriptionListCreateAPIView.as_view(), name="subscription"),
     path("subscriptions-users/", UserSubscriptionListCreateAPIView.as_view(), name="subscription-user-list"),
     path(
         "subscriptions/<int:pk>/",
