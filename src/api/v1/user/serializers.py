@@ -44,6 +44,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class LimitedUserSerializer(serializers.ModelSerializer):
+    groups = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = get_user_model()
-        fields = ("first_name", "last_name")
+        fields = ("id", "first_name", "last_name", "groups")
