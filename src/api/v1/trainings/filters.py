@@ -6,7 +6,7 @@ from apps.trainings.models import TrainingType
 class TrainingFilter(filters.FilterSet):
     trainer_id = filters.NumberFilter(field_name="trainer__id")
     date = filters.DateFilter(field_name="date")
-    type = filters.ChoiceFilter(field_name="training_type", choices=[(type.code, type.name) for type in TrainingType.objects.all()])
+    training_type = filters.ChoiceFilter(field_name="training_type")
 
 
 class TrainingUserFilter(filters.FilterSet):
