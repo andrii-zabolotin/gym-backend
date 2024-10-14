@@ -32,8 +32,10 @@ class IsStaff(permissions.BasePermission):
         )
 
 
-class IsAdministrator(permissions.BasePermission):
+class IsAdministratorOrSuperUser(permissions.BasePermission):
     def has_permission(self, request, view):
         return (
-                request.user and request.user.is_authenticated and request.user.is_administrator
+                request.user
+                and request.user.is_authenticated
+                and (request.user.is_administrator or request.user.is_superuser)
         )
