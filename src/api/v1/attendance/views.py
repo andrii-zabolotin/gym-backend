@@ -24,9 +24,9 @@ class AttendanceListCreateAPIView(generics.ListCreateAPIView):
             return Attendance.objects.none()
 
         if self.request.user.is_superuser or self.request.user.is_administrator:
-            return Attendance.objects.all()
+            return Attendance.objects.all().order_by('-attendance_time')
 
-        return Attendance.objects.filter(user_subscription__user=self.request.user)
+        return Attendance.objects.filter(user_subscription__user=self.request.user).order_by('-attendance_time')
 
     def create(self, request, *args, **kwargs):
         try:
