@@ -3,14 +3,11 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
-from apps.subscriptions.models import UserSubscription
-from apps.trainings.models import Training
-
 
 class Attendance(models.Model):
-    user_subscription = models.ForeignKey(UserSubscription, on_delete=models.PROTECT, verbose_name=_("User"))
+    user_subscription = models.ForeignKey("subscriptions.UserSubscription", on_delete=models.PROTECT, verbose_name=_("User"))
     attendance_time = models.DateTimeField(auto_now_add=True, verbose_name=_("Attendance Datetime"))
-    training = models.ForeignKey(Training, on_delete=models.PROTECT, verbose_name=_("Training"), null=True, blank=True)
+    training = models.ForeignKey("trainings.Training", on_delete=models.PROTECT, verbose_name=_("Training"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("Attendance")
