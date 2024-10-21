@@ -1,8 +1,15 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from datetime import timedelta
+from apps.attendance.models import Attendance
 
-from apps.user.models import CustomUser
+
+class SubscriptionType(models.Model):
+    code = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class Subscription(models.Model):
@@ -10,15 +17,8 @@ class Subscription(models.Model):
         verbose_name = _("Subscription")
         verbose_name_plural = _("Subscriptions")
 
-    SUBSCRIPTION_TYPES = (
-        ('general', 'General'),
-        ('group', 'Group Classes'),
-        ('personal', 'Personal Training'),
-        ('massage', 'Massage'),
-    )
-
     name = models.CharField(verbose_name=_("Subscription name"))
-    subscription_type = models.CharField(max_length=15, choices=SUBSCRIPTION_TYPES, verbose_name=_("Subscription type"))
+    subscription_type = models.ForeignKey("SubscriptionType", on_delete=models.PROTECT, verbose_name=_("Subscription type"))
     validity_period = models.IntegerField(verbose_name=_("Validity period"))
     available_number_of_visits = models.IntegerField(verbose_name=_("Available number of visits"))
     price = models.IntegerField(verbose_name=_("Price"))
@@ -41,14 +41,20 @@ class Subscription(models.Model):
 class UserSubscription(models.Model):
 
     purchase_at = models.DateTimeField(auto_now_add=True)
-    subscription = models.ForeignKey(Subscription, on_delete=models.PROTECT, verbose_name=_("Subscription"))
-    user = models.ForeignKey(CustomUser, on_delete=models.PROTECT, verbose_name=_("User"))
+    subscription = models.ForeignKey("subscriptions.Subscription", on_delete=models.PROTECT, verbose_name=_("Subscription"))
+    user = models.ForeignKey("user.CustomUser", on_delete=models.PROTECT, verbose_name=_("User"))
 
     @property
     def expiration_at(self):
         if self.subscription and self.purchase_at:
             return self.purchase_at + timedelta(days=self.subscription.validity_period)
         return None
+
+    @property
+    def used_visits(self):
+        used_visits = Attendance.objects.filter(user_subscription=self).count()
+
+        return max(used_visits, 0)
 
     def __str__(self):
         return f"[{self.pk}] {self.user.phone} - {self.subscription.name}"
