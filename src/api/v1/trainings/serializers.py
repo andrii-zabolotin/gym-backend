@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api.v1.subscription.serializers import UserSubscriptionSerializer, CustomUserSubscriptionSerializer
 from api.v1.user.serializers import LimitedUserSerializer
 from apps.trainings.models import Training, TrainingUser, TrainingType
 
@@ -30,4 +31,13 @@ class CustomTrainingsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Training
-        fields = ["training_type", "trainer"]
+        fields = "__all__"
+
+
+class CustomTrainingUserSerializer(serializers.ModelSerializer):
+    training = CustomTrainingsSerializer(read_only=True)
+    user_subscription = CustomUserSubscriptionSerializer(read_only=True)
+
+    class Meta:
+        model = TrainingUser
+        fields = "__all__"
