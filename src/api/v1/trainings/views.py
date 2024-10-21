@@ -8,17 +8,22 @@ from rest_framework import viewsets
 
 from api.auth.permissions import IsSuperUser
 from api.v1.trainings.filters import TrainingFilter, TrainingUserFilter
-from api.v1.trainings.serializers import TrainingsSerializer, TrainingUserSerializer, TrainingTypeSerializer
+from api.v1.trainings.serializers import TrainingsSerializer, TrainingUserSerializer, TrainingTypeSerializer, \
+    CustomTrainingUserSerializer, CustomTrainingsSerializer
 from apps.trainings.models import Training, TrainingUser, TrainingType
 
 
 class TrainingListCreateAPIView(generics.ListCreateAPIView):
     """Create a new subscription in the system"""
 
-    serializer_class = TrainingsSerializer
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = []
     filterset_class = TrainingFilter
+
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return CustomTrainingsSerializer
+        return TrainingsSerializer
 
     def get_permissions(self):
         if self.request.method == 'POST':
@@ -28,9 +33,9 @@ class TrainingListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         if not self.request.user.is_anonymous and (self.request.user.is_superuser or self.request.user.is_administrator):
-            return Training.objects.all()
+            return Training.objects.all().order_by("date", "start_time")
 
-        return Training.objects.filter(date__gte=timezone.now().date())
+        return Training.objects.filter(date__gte=timezone.now().date()).order_by("date", "start_time")
 
 
 class TrainingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -72,19 +77,23 @@ class TrainingRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView
 
 
 class TrainingUserListCreateAPIView(generics.ListCreateAPIView):
-    serializer_class = TrainingUserSerializer
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated, permissions.DjangoModelPermissions]
     filterset_class = TrainingUserFilter
+
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return CustomTrainingUserSerializer
+        return TrainingUserSerializer
 
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return TrainingUser.objects.none()
 
         if self.request.user.is_superuser or self.request.user.is_administrator:
-            return TrainingUser.objects.all()
+            return TrainingUser.objects.all().order_by("-joined_at")
 
-        return TrainingUser.objects.filter(user_subscription__user=self.request.user)
+        return TrainingUser.objects.filter(user_subscription__user=self.request.user).order_by("-joined_at")
 
     def create(self, request, *args, **kwargs):
         try:
